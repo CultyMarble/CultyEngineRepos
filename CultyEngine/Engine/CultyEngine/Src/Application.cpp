@@ -9,6 +9,7 @@ using namespace CultyEngine::Core;
 using namespace CultyEngine::Graphics;
 using namespace CultyEngine::Input;
 using namespace CultyEngine::Physics;
+using namespace CultyEngine::Audio;
 
 void Application::Run(const ApplicationConfig& config)
 {
@@ -35,6 +36,8 @@ void Application::Run(const ApplicationConfig& config)
 
     PhysicsWorld::Settings settings;
     PhysicsWorld::StaticInitialize(settings);
+
+    AudioSystem::StaticInitialize();
 
     ASSERT(mCurrentState != nullptr, "Application: need an application state!");
     mCurrentState->Initialize();
@@ -65,6 +68,8 @@ void Application::Run(const ApplicationConfig& config)
             mCurrentState->Initialize();
         }
 
+        AudioSystem::Get()->Update();
+
         float deltaTime = TimeUtils::GetDeltaTime();
         if (deltaTime < 0.5f)
         {
@@ -85,6 +90,7 @@ void Application::Run(const ApplicationConfig& config)
     // Clean Up
     mCurrentState->Terminate();
 
+    AudioSystem::StaticTerminate();
     PhysicsWorld::StaticTerminate();
     ModelManager::StaticTerminate();
     TextureManager::StaticTerminate();
